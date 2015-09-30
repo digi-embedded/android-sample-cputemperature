@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CPU Temperature Sample</string>
+    <string name="subscribe">Subscribe</string>
+    <string name="unsubscribe">Unsubscribe</string>
+    <string name="time">Update interval (ms)</string>
+    <string name="default_time">5000</string>
+    <string name="subscribed">Subscribed to temperature updates!</string>
+    <string name="unsubscribed">Not subscribed to temperature updates</string>
+    <string name="active_temp">Active Temperature: </string>
+    <string name="hot_temp">Hot Temperature: </string>
+    <string name="critical_temp">Critical Temperature: </string>
+    <string name="current_temp">Current Temperature: </string>
+    <string name="default_temp">-999 °C</string>
+</resources>
