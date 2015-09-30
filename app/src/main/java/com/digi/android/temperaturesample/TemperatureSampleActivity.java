@@ -1,4 +1,4 @@
-package com.example.android.temperaturesample;
+package com.digi.android.temperaturesample;
 
 import android.app.Activity;
 import android.app.AlertDialog;
