@@ -91,10 +91,6 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
-	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -107,10 +103,6 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 		initializeUIComponents();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see android.temperature.CPUTemperatureListener#onTemperatureUpdate(float)
-	 */
 	@Override
 	public void onTemperatureUpdate(float value) {
 		currentTemperatureText.setText(String.format(TEMPERATURE_FORMAT, value));
@@ -120,10 +112,6 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 		handler.sendEmptyMessageDelayed(ACTION_CHANGE_TEXT_WHITE, 400);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see android.app.Activity#onStop()
-	 */
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -131,11 +119,7 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 		// Remove listener.
 		handleUnsubscribePressed();
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see android.app.Activity#onResume()
-	 */
+
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -149,10 +133,6 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 		// Initialize subscribe button.
 		Button subscribeButton = (Button)findViewById(R.id.subscribe_button);
 		subscribeButton.setOnClickListener(new OnClickListener() {
-			/*
-			 * (non-Javadoc)
-			 * @see android.view.View.OnClickListener#onClick(android.view.View)
-			 */
 			@Override
 			public void onClick(View v) {
 				handleSubscribePressed();
@@ -162,10 +142,6 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 		// Initialize unsubscribe button.
 		Button unsubscribeButton = (Button)findViewById(R.id.unsubscribe_button);
 		unsubscribeButton.setOnClickListener(new OnClickListener() {
-			/*
-			 * (non-Javadoc)
-			 * @see android.view.View.OnClickListener#onClick(android.view.View)
-			 */
 			@Override
 			public void onClick(View v) {
 				handleUnsubscribePressed();
@@ -186,10 +162,6 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 		// Hot temperature Help button.
 		ImageButton hotTemperatureButton = (ImageButton)findViewById(R.id.hot_temp_help_button);
 		hotTemperatureButton.setOnClickListener(new OnClickListener() {
-			/*
-			 * (non-Javadoc)
-			 * @see android.view.View.OnClickListener#onClick(android.view.View)
-			 */
 			@Override
 			public void onClick(View v) {
 				showPopupDialog(HOT_TEMPERATURE_TITLE, HOT_TEMPERATURE_DESCRIPTION);
@@ -199,10 +171,6 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 		// Critical temperature Help button.
 		ImageButton criticalTemperatureButton = (ImageButton)findViewById(R.id.critical_temp_help_button);
 		criticalTemperatureButton.setOnClickListener(new OnClickListener() {
-			/*
-			 * (non-Javadoc)
-			 * @see android.view.View.OnClickListener#onClick(android.view.View)
-			 */
 			@Override
 			public void onClick(View v) {
 				showPopupDialog(CRITICAL_TEMPERATURE_TITLE, CRITICAL_TEMPERATURE_DESCRIPTION);
