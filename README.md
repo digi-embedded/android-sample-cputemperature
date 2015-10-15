@@ -44,7 +44,7 @@ Compatible with
 * ConnectCore 6 SBC v2
 
 License
----------
+-------
 
 This software is open-source software. Copyright Digi International, 2014-2015.
 

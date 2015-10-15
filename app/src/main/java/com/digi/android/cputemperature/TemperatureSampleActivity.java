@@ -10,7 +10,7 @@
  * =======================================================================
  */
 
-package com.digi.android.temperaturesample;
+package com.digi.android.cputemperature;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -273,6 +273,7 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 		alertDialog.setMessage(message);
 		alertDialog.setCancelable(true);
 		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				alertDialog.dismiss();
 			}
