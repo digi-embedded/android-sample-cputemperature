@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.digi.android.cputemperature"
+    package="com.digi.android.sample.cputemperature"
     android:versionCode="1"
     android:versionName="1.0">
 
-    <uses-permission android:name="android.permission.CPU_TEMPERATURE" />
+    <uses-permission android:name="com.digi.android.permission.CPU_TEMPERATURE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/digi_icon"
         android:label="@string/app_name">
+        <uses-library
+            android:name="com.digi.android"
+            android:required="true" />
+
         <activity
-            android:name=".TemperatureSampleActivity"
+            android:name="com.digi.android.sample.cputemperature.TemperatureSampleActivity"
             android:label="@string/app_name"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014-2015 Digi International Inc.,
+ * Copyright (c) 2014-2016 Digi International Inc.,
  * All rights not expressly granted are reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
@@ -10,17 +10,14 @@
  * =======================================================================
  */
 
-package com.digi.android.cputemperature;
+package com.digi.android.sample.cputemperature;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.temperature.CPUTemperatureListener;
-import android.temperature.CPUTemperatureManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -29,6 +26,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.digi.android.temperature.ICPUTemperatureListener;
+import com.digi.android.temperature.CPUTemperatureManager;
+
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 /**
@@ -40,7 +41,7 @@ import java.lang.ref.WeakReference;
  * <p>For a complete description on the example, refer to the 'README.md' file
  * included in the example directory.</p>
  */
-public class TemperatureSampleActivity extends Activity implements CPUTemperatureListener {
+public class TemperatureSampleActivity extends Activity implements ICPUTemperatureListener {
 
 	// Constants.
 	private final static String TEMPERATURE_FORMAT = "%.1f " + (char)0x00B0 + "C";
@@ -77,7 +78,7 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 		private final WeakReference<TemperatureSampleActivity> wActivity;
 
 		IncomingHandler(TemperatureSampleActivity activity) {
-			wActivity = new WeakReference<TemperatureSampleActivity>(activity);
+			wActivity = new WeakReference<>(activity);
 		}
 
 		@Override
@@ -85,9 +86,8 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 			super.handleMessage(msg);
 			TemperatureSampleActivity activity = wActivity.get();
 
-			if (activity != null) {
+			if (activity != null)
 				activity.updateTemperatureTextStatus(msg.what);
-			}
 		}
 	}
 
@@ -97,7 +97,7 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 		setContentView(R.layout.main);
 
 		// Get CPU Temperature System Service.
-		temperatureManager = (CPUTemperatureManager)getSystemService(Context.TEMPERATURE_SERVICE);
+		temperatureManager = new CPUTemperatureManager(this);
 
 		// Initialize UI.
 		initializeUIComponents();
@@ -183,12 +183,17 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 	 */
 	private void readTemperatures() {
 		// Read temperatures from service.
-		hotTemperatureText.setText(
-				String.format(TEMPERATURE_FORMAT, temperatureManager.getHotTemperature()));
-		criticalTemperatureText.setText(
-				String.format(TEMPERATURE_FORMAT, temperatureManager.getCriticalTemperature()));
-		currentTemperatureText.setText(
-				String.format(TEMPERATURE_FORMAT, temperatureManager.getCurrentTemperature()));
+		try {
+			hotTemperatureText.setText(
+					String.format(TEMPERATURE_FORMAT, temperatureManager.getHotTemperature()));
+			criticalTemperatureText.setText(
+					String.format(TEMPERATURE_FORMAT, temperatureManager.getCriticalTemperature()));
+			currentTemperatureText.setText(
+					String.format(TEMPERATURE_FORMAT, temperatureManager.getCurrentTemperature()));
+		} catch (IOException e) {
+			showToast("Error reading tempereatures: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -197,7 +202,7 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 	private void handleSubscribePressed() {
 		try {
 			long timeout = Long.valueOf(timeText.getText().toString());
-			temperatureManager.requestTemperatureUpdates(timeout, this);
+			temperatureManager.registerListener(this, timeout);
 			setTextSubscribed();
 		} catch (NumberFormatException e) {
 			showToast("Invalid timeout value");
@@ -211,7 +216,7 @@ public class TemperatureSampleActivity extends Activity implements CPUTemperatur
 	 * Handles what happens when the unsubscribe button is pressed.
 	 */
 	private void handleUnsubscribePressed() {
-		temperatureManager.removeUpdates(this);
+		temperatureManager.unregisterListener(this);
 		setTextUnsubscribed();
 	}
 
