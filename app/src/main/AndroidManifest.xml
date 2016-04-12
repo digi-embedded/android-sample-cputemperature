@@ -4,7 +4,7 @@
     android:versionCode="1"
     android:versionName="1.0">
 
-    <uses-permission android:name="com.digi.android.permission.CPU_TEMPERATURE" />
+    <uses-permission android:name="com.digi.android.permission.CPU" />
 
     <application
         android:allowBackup="true"

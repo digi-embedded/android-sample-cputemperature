@@ -30,10 +30,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.digi.android.temperature.ICPUTemperatureListener;
-import com.digi.android.temperature.CPUTemperatureManager;
+import com.digi.android.pm.cpu.CPUManager;
+import com.digi.android.pm.cpu.ICPUTemperatureListener;
+import com.digi.android.pm.cpu.exception.CPUTemperatureException;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 /**
@@ -49,10 +49,10 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 
 	// Constants.
 	private final static String TEMPERATURE_FORMAT = "%.1f " + (char)0x00B0 + "C";
-	
+
 	private final static int ACTION_CHANGE_TEXT_YELLOW = 0;
 	private final static int ACTION_CHANGE_TEXT_WHITE = 1;
-	
+
 	private final static String HOT_TEMPERATURE_TITLE = "Hot CPU Temperature";
 	private final static String HOT_TEMPERATURE_DESCRIPTION = "Hot CPU temperature "
 			+ "is the limit temperature at which system will reduce CPU "
@@ -71,7 +71,7 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 	private TextView criticalTemperatureText;
 	private TextView currentTemperatureText;
 
-	private CPUTemperatureManager temperatureManager;
+	private CPUManager cpuManager;
 
 	private IncomingHandler handler = new IncomingHandler(this);
 
@@ -100,8 +100,8 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		// Get CPU Temperature System Service.
-		temperatureManager = new CPUTemperatureManager(this);
+		// Get CPU System Service.s
+		cpuManager = new CPUManager(this);
 
 		// Initialize UI.
 		initializeUIComponents();
@@ -189,13 +189,13 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 		// Read temperatures from service.
 		try {
 			hotTemperatureText.setText(
-					String.format(TEMPERATURE_FORMAT, temperatureManager.getHotTemperature()));
+					String.format(TEMPERATURE_FORMAT, cpuManager.getHotTemperature()));
 			criticalTemperatureText.setText(
-					String.format(TEMPERATURE_FORMAT, temperatureManager.getCriticalTemperature()));
+					String.format(TEMPERATURE_FORMAT, cpuManager.getCriticalTemperature()));
 			currentTemperatureText.setText(
-					String.format(TEMPERATURE_FORMAT, temperatureManager.getCurrentTemperature()));
-		} catch (IOException e) {
-			showToast("Error reading tempereatures: " + e.getMessage());
+					String.format(TEMPERATURE_FORMAT, cpuManager.getCurrentTemperature()));
+		} catch (CPUTemperatureException e) {
+			showToast("Error reading temperatures: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -206,7 +206,7 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 	private void handleSubscribePressed() {
 		try {
 			long timeout = Long.valueOf(timeText.getText().toString());
-			temperatureManager.registerListener(this, timeout);
+			cpuManager.registerListener(this, timeout);
 			setTextSubscribed();
 		} catch (NumberFormatException e) {
 			showToast("Invalid timeout value");
@@ -220,7 +220,7 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 	 * Handles what happens when the unsubscribe button is pressed.
 	 */
 	private void handleUnsubscribePressed() {
-		temperatureManager.unregisterListener(this);
+		cpuManager.unregisterListener(this);
 		setTextUnsubscribed();
 	}
 
@@ -263,16 +263,16 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 
 	/**
 	 * Displays a toast with the given message.
-	 * 
+	 *
 	 * @param message Message to display in the toast.
 	 */
 	private void showToast(String message) {
 		Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 	}
-	
+
 	/**
 	 * Displays a popup dialog with the given title and message.
-	 * 
+	 *
 	 * @param title Popup dialog title.
 	 * @param message Popup dialog message.
 	 */
