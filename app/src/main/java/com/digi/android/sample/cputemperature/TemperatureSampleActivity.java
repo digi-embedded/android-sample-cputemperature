@@ -30,9 +30,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.digi.android.pm.cpu.CPUManager;
-import com.digi.android.pm.cpu.ICPUTemperatureListener;
-import com.digi.android.pm.cpu.exception.CPUTemperatureException;
+import com.digi.android.system.cpu.CPUManager;
+import com.digi.android.system.cpu.ICPUTemperatureListener;
+import com.digi.android.system.cpu.exception.CPUTemperatureException;
 
 import java.lang.ref.WeakReference;
 
