@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2014-2016, Digi International Inc. <support@digi.com>
+/*
+ * Copyright (c) 2014-2021, Digi International Inc. <support@digi.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -35,6 +35,7 @@ import com.digi.android.system.cpu.ICPUTemperatureListener;
 import com.digi.android.system.cpu.exception.CPUTemperatureException;
 
 import java.lang.ref.WeakReference;
+import java.util.Locale;
 
 /**
  * CPU Temperature sample application.
@@ -48,20 +49,18 @@ import java.lang.ref.WeakReference;
 public class TemperatureSampleActivity extends Activity implements ICPUTemperatureListener {
 
 	// Constants.
-	private final static String TEMPERATURE_FORMAT = "%.1f " + (char)0x00B0 + "C";
+	private final static String TEMP_FORMAT = "%.1f " + (char)0x00B0 + "C";
 
 	private final static int ACTION_CHANGE_TEXT_YELLOW = 0;
 	private final static int ACTION_CHANGE_TEXT_WHITE = 1;
 
-	private final static String HOT_TEMPERATURE_TITLE = "Hot CPU Temperature";
-	private final static String HOT_TEMPERATURE_DESCRIPTION = "Hot CPU temperature "
-			+ "is the limit temperature at which system will reduce CPU "
-			+ "frequency to avoid system overheating.";
-	private final static String CRITICAL_TEMPERATURE_TITLE = "Critical CPU Temperature";
-	private final static String CRITICAL_TEMPERATURE_DESCRIPTION = "Critical CPU temperature "
-			+ "is the limit temperature at which system will halt to avoid "
-			+ "system damage caused by overheating. This always occurs after "
-			+ "reaching hot temperature.";
+	private final static String HOT_TEMP_TITLE = "Hot CPU Temperature";
+	private final static String HOT_TEMP_DESC = "Hot CPU temperature is the limit temperature at "
+			+ "which system will reduce CPU frequency to avoid system overheating.";
+	private final static String CRITICAL_TEMP_TITLE = "Critical CPU Temperature";
+	private final static String CRITICAL_TEMP_DESC = "Critical CPU temperature is the limit "
+			+ "temperature at which system will halt to avoid system damage caused by overheating. "
+			+ "This always occurs after reaching hot temperature.";
 
 	// Variables.
 	private EditText timeText;
@@ -73,7 +72,7 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 
 	private CPUManager cpuManager;
 
-	private IncomingHandler handler = new IncomingHandler(this);
+	private final IncomingHandler handler = new IncomingHandler(this);
 
 	/**
 	 * Handler to manage UI calls from different threads.
@@ -109,7 +108,7 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 
 	@Override
 	public void onTemperatureUpdate(float value) {
-		currentTemperatureText.setText(String.format(TEMPERATURE_FORMAT, value));
+		currentTemperatureText.setText(String.format(Locale.getDefault(), TEMP_FORMAT, value));
 
 		// Add a mark effect to the text.
 		handler.sendEmptyMessage(ACTION_CHANGE_TEXT_YELLOW);
@@ -135,7 +134,7 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 	 */
 	private void initializeUIComponents() {
 		// Initialize subscribe button.
-		Button subscribeButton = (Button)findViewById(R.id.subscribe_button);
+		Button subscribeButton = findViewById(R.id.subscribe_button);
 		subscribeButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -144,7 +143,7 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 		});
 
 		// Initialize unsubscribe button.
-		Button unsubscribeButton = (Button)findViewById(R.id.unsubscribe_button);
+		Button unsubscribeButton = findViewById(R.id.unsubscribe_button);
 		unsubscribeButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -153,31 +152,31 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 		});
 
 		// Initialize time interval text.
-		timeText = (EditText)findViewById(R.id.time_text);
+		timeText = findViewById(R.id.time_text);
 
 		// Initialize status text.
-		statusText = (TextView)findViewById(R.id.status_text);
+		statusText = findViewById(R.id.status_text);
 
 		// Initialize temperature labels.
-		hotTemperatureText = (TextView)findViewById(R.id.hot_temp_label);
-		criticalTemperatureText = (TextView)findViewById(R.id.critical_temp_label);
-		currentTemperatureText = (TextView)findViewById(R.id.current_temp_label);
+		hotTemperatureText = findViewById(R.id.hot_temp_label);
+		criticalTemperatureText = findViewById(R.id.critical_temp_label);
+		currentTemperatureText = findViewById(R.id.current_temp_label);
 
 		// Hot temperature Help button.
-		ImageButton hotTemperatureButton = (ImageButton)findViewById(R.id.hot_temp_help_button);
+		ImageButton hotTemperatureButton = findViewById(R.id.hot_temp_help_button);
 		hotTemperatureButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				showPopupDialog(HOT_TEMPERATURE_TITLE, HOT_TEMPERATURE_DESCRIPTION);
+				showPopupDialog(HOT_TEMP_TITLE, HOT_TEMP_DESC);
 			}
 		});
 
 		// Critical temperature Help button.
-		ImageButton criticalTemperatureButton = (ImageButton)findViewById(R.id.critical_temp_help_button);
+		ImageButton criticalTemperatureButton = findViewById(R.id.critical_temp_help_button);
 		criticalTemperatureButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				showPopupDialog(CRITICAL_TEMPERATURE_TITLE, CRITICAL_TEMPERATURE_DESCRIPTION);
+				showPopupDialog(CRITICAL_TEMP_TITLE, CRITICAL_TEMP_DESC);
 			}
 		});
 	}
@@ -189,11 +188,11 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 		// Read temperatures from service.
 		try {
 			hotTemperatureText.setText(
-					String.format(TEMPERATURE_FORMAT, cpuManager.getHotTemperature()));
+					String.format(Locale.getDefault(), TEMP_FORMAT, cpuManager.getHotTemperature()));
 			criticalTemperatureText.setText(
-					String.format(TEMPERATURE_FORMAT, cpuManager.getCriticalTemperature()));
+					String.format(Locale.getDefault(), TEMP_FORMAT, cpuManager.getCriticalTemperature()));
 			currentTemperatureText.setText(
-					String.format(TEMPERATURE_FORMAT, cpuManager.getCurrentTemperature()));
+					String.format(Locale.getDefault(), TEMP_FORMAT, cpuManager.getCurrentTemperature()));
 		} catch (CPUTemperatureException e) {
 			showToast("Error reading temperatures: " + e.getMessage());
 			e.printStackTrace();
@@ -205,7 +204,7 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 	 */
 	private void handleSubscribePressed() {
 		try {
-			long timeout = Long.valueOf(timeText.getText().toString());
+			long timeout = Long.parseLong(timeText.getText().toString());
 			cpuManager.registerListener(this, timeout);
 			setTextSubscribed();
 		} catch (NumberFormatException e) {
