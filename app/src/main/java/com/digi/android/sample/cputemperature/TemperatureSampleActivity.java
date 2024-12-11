@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2021, Digi International Inc. <support@digi.com>
+ * Copyright (c) 2014-2025, Digi International Inc. <support@digi.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,17 +18,17 @@ package com.digi.android.sample.cputemperature;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.digi.android.system.cpu.CPUManager;
 import com.digi.android.system.cpu.ICPUTemperatureListener;
@@ -81,11 +81,12 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 		private final WeakReference<TemperatureSampleActivity> wActivity;
 
 		IncomingHandler(TemperatureSampleActivity activity) {
+			super(Looper.getMainLooper());
 			wActivity = new WeakReference<>(activity);
 		}
 
 		@Override
-		public void handleMessage(Message msg) {
+		public void handleMessage(@NonNull Message msg) {
 			super.handleMessage(msg);
 			TemperatureSampleActivity activity = wActivity.get();
 
@@ -135,21 +136,11 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 	private void initializeUIComponents() {
 		// Initialize subscribe button.
 		Button subscribeButton = findViewById(R.id.subscribe_button);
-		subscribeButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				handleSubscribePressed();
-			}
-		});
+		subscribeButton.setOnClickListener(v -> handleSubscribePressed());
 
 		// Initialize unsubscribe button.
 		Button unsubscribeButton = findViewById(R.id.unsubscribe_button);
-		unsubscribeButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				handleUnsubscribePressed();
-			}
-		});
+		unsubscribeButton.setOnClickListener(v -> handleUnsubscribePressed());
 
 		// Initialize time interval text.
 		timeText = findViewById(R.id.time_text);
@@ -164,21 +155,11 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 
 		// Hot temperature Help button.
 		ImageButton hotTemperatureButton = findViewById(R.id.hot_temp_help_button);
-		hotTemperatureButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				showPopupDialog(HOT_TEMP_TITLE, HOT_TEMP_DESC);
-			}
-		});
+		hotTemperatureButton.setOnClickListener(v -> showPopupDialog(HOT_TEMP_TITLE, HOT_TEMP_DESC));
 
 		// Critical temperature Help button.
 		ImageButton criticalTemperatureButton = findViewById(R.id.critical_temp_help_button);
-		criticalTemperatureButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				showPopupDialog(CRITICAL_TEMP_TITLE, CRITICAL_TEMP_DESC);
-			}
-		});
+		criticalTemperatureButton.setOnClickListener(v -> showPopupDialog(CRITICAL_TEMP_TITLE, CRITICAL_TEMP_DESC));
 	}
 
 	/**
@@ -280,12 +261,8 @@ public class TemperatureSampleActivity extends Activity implements ICPUTemperatu
 		alertDialog.setTitle(title);
 		alertDialog.setMessage(message);
 		alertDialog.setCancelable(true);
-		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				alertDialog.dismiss();
-			}
-		});
+		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+				(dialog, which) -> alertDialog.dismiss());
 
 		// Set the icon for the dialog.
 		alertDialog.setIcon(R.drawable.help_image);
